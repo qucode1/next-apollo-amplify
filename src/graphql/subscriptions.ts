@@ -6,7 +6,7 @@ export const onCreateMovie = /* GraphQL */ `
   subscription OnCreateMovie($filter: ModelSubscriptionMovieFilterInput) {
     onCreateMovie(filter: $filter) {
       id
-      name
+      title
       description
       video
       createdAt
@@ -18,7 +18,7 @@ export const onUpdateMovie = /* GraphQL */ `
   subscription OnUpdateMovie($filter: ModelSubscriptionMovieFilterInput) {
     onUpdateMovie(filter: $filter) {
       id
-      name
+      title
       description
       video
       createdAt
@@ -30,7 +30,7 @@ export const onDeleteMovie = /* GraphQL */ `
   subscription OnDeleteMovie($filter: ModelSubscriptionMovieFilterInput) {
     onDeleteMovie(filter: $filter) {
       id
-      name
+      title
       description
       video
       createdAt

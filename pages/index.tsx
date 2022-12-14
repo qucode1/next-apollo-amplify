@@ -1,9 +1,18 @@
-import Head from 'next/head'
-import Image from 'next/image'
 import { useQuery, gql } from '@apollo/client';
-import styles from '../styles/Home.module.css'
+import { Amplify, API, Auth, withSSRContext } from 'aws-amplify';
+import Head from 'next/head';
+import Image from 'next/image'
+import { FormEvent } from 'react';
+
+import awsExports from '../src/aws-exports';
+import { createMovie } from '../src/graphql/mutations';
+import { listMovies } from '../src/graphql/queries';
+import { Movie } from '../src/API';
+import styles from '../styles/Home.module.css';
 
 import { client, countriesClient } from './_app';
+
+Amplify.configure({ ...awsExports, ssr: true });
 
 const GET_LOCATIONS = gql`
   query GetLocations {
@@ -25,7 +34,62 @@ const GET_COUNTRY = gql`
   }
 `
 
-export default function Home() {
+type HomeProps = {
+  movies: Movie[]
+}
+
+export async function getServerSideProps({ req }: any) {
+  const SSR = withSSRContext({ req });
+  try {
+    const response = await SSR.API.graphql({ query: listMovies });
+    return {
+      props: {
+        movies: response.data.listMovies.items,
+      },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {},
+    };
+  }
+}
+
+async function handleCreateMovie(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+
+  if (!event.target) {
+    console.log('Missing event.target', event.target)
+    return
+  }
+
+  const form = new FormData(event.target as HTMLFormElement);
+
+  try {
+    const { data } = await API.graphql({
+      authMode: 'API_KEY',
+      query: createMovie,
+      variables: {
+        input: {
+          title: form.get('title'),
+          description: form.get('description')
+        }
+      }
+    });
+
+    window.location.href = `/movie/${data.createMovie.title}`;
+  } catch (error: any) {
+    const { errors = [] } = error
+    if (!error?.errors?.length) {
+      console.error(error)
+      return
+    }
+    console.error(...errors);
+    throw new Error(errors[0].message);
+  }
+}
+
+export default function Home({ movies = [] }: HomeProps) {
   const { loading, error, data } = useQuery(GET_LOCATIONS, {
     client
   });
@@ -48,6 +112,44 @@ export default function Home() {
         </h1>
 
         <h2>Apollo Docs Api</h2>
+
+        <p className={styles.description}>
+          <code className={styles.code}>{movies.length}</code>
+          movies
+        </p>
+
+        <div className={styles.grid}>
+          {movies.map((movie) => (
+            <a className={styles.card} href={`/movie/${movie.title}`} key={movie.title}>
+              <h3>{movie.title}</h3>
+              <p>{movie.description}</p>
+            </a>
+          ))}
+
+          <div className={styles.card}>
+            <h3 className={styles.title}>New Movie</h3>
+
+            <form onSubmit={handleCreateMovie}>
+              <fieldset>
+                <legend>Title</legend>
+                <input
+                  defaultValue={`Today, ${new Date().toLocaleTimeString()}`}
+                  name="title"
+                />
+              </fieldset>
+
+              <fieldset>
+                <legend>Content</legend>
+                <textarea
+                  defaultValue="I built an Amplify project with Next.js!"
+                  name="description"
+                />
+              </fieldset>
+
+              <button>Create Movie</button>
+            </form>
+          </div>
+        </div>
 
         <div className={styles.grid}>
           {loading && <h2>Loading...</h2>}

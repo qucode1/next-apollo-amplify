@@ -4,13 +4,13 @@
 
 export type CreateMovieInput = {
   id?: string | null,
-  name: string,
+  title: string,
   description?: string | null,
   video?: string | null,
 };
 
 export type ModelMovieConditionInput = {
-  name?: ModelStringInput | null,
+  title?: ModelStringInput | null,
   description?: ModelStringInput | null,
   video?: ModelStringInput | null,
   and?: Array< ModelMovieConditionInput | null > | null,
@@ -61,7 +61,7 @@ export type ModelSizeInput = {
 export type Movie = {
   __typename: "Movie",
   id: string,
-  name: string,
+  title: string,
   description?: string | null,
   video?: string | null,
   createdAt: string,
@@ -70,7 +70,7 @@ export type Movie = {
 
 export type UpdateMovieInput = {
   id: string,
-  name?: string | null,
+  title?: string | null,
   description?: string | null,
   video?: string | null,
 };
@@ -81,7 +81,7 @@ export type DeleteMovieInput = {
 
 export type ModelMovieFilterInput = {
   id?: ModelIDInput | null,
-  name?: ModelStringInput | null,
+  title?: ModelStringInput | null,
   description?: ModelStringInput | null,
   video?: ModelStringInput | null,
   and?: Array< ModelMovieFilterInput | null > | null,
@@ -111,9 +111,15 @@ export type ModelMovieConnection = {
   nextToken?: string | null,
 };
 
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type ModelSubscriptionMovieFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
+  title?: ModelSubscriptionStringInput | null,
   description?: ModelSubscriptionStringInput | null,
   video?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionMovieFilterInput | null > | null,
@@ -159,7 +165,7 @@ export type CreateMovieMutation = {
   createMovie?:  {
     __typename: "Movie",
     id: string,
-    name: string,
+    title: string,
     description?: string | null,
     video?: string | null,
     createdAt: string,
@@ -176,7 +182,7 @@ export type UpdateMovieMutation = {
   updateMovie?:  {
     __typename: "Movie",
     id: string,
-    name: string,
+    title: string,
     description?: string | null,
     video?: string | null,
     createdAt: string,
@@ -193,7 +199,7 @@ export type DeleteMovieMutation = {
   deleteMovie?:  {
     __typename: "Movie",
     id: string,
-    name: string,
+    title: string,
     description?: string | null,
     video?: string | null,
     createdAt: string,
@@ -209,7 +215,7 @@ export type GetMovieQuery = {
   getMovie?:  {
     __typename: "Movie",
     id: string,
-    name: string,
+    title: string,
     description?: string | null,
     video?: string | null,
     createdAt: string,
@@ -229,7 +235,31 @@ export type ListMoviesQuery = {
     items:  Array< {
       __typename: "Movie",
       id: string,
-      name: string,
+      title: string,
+      description?: string | null,
+      video?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type MoviesByTitleQueryVariables = {
+  title: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelMovieFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type MoviesByTitleQuery = {
+  moviesByTitle?:  {
+    __typename: "ModelMovieConnection",
+    items:  Array< {
+      __typename: "Movie",
+      id: string,
+      title: string,
       description?: string | null,
       video?: string | null,
       createdAt: string,
@@ -247,7 +277,7 @@ export type OnCreateMovieSubscription = {
   onCreateMovie?:  {
     __typename: "Movie",
     id: string,
-    name: string,
+    title: string,
     description?: string | null,
     video?: string | null,
     createdAt: string,
@@ -263,7 +293,7 @@ export type OnUpdateMovieSubscription = {
   onUpdateMovie?:  {
     __typename: "Movie",
     id: string,
-    name: string,
+    title: string,
     description?: string | null,
     video?: string | null,
     createdAt: string,
@@ -279,7 +309,7 @@ export type OnDeleteMovieSubscription = {
   onDeleteMovie?:  {
     __typename: "Movie",
     id: string,
-    name: string,
+    title: string,
     description?: string | null,
     video?: string | null,
     createdAt: string,

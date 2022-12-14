@@ -6,7 +6,7 @@ export const getMovie = /* GraphQL */ `
   query GetMovie($id: ID!) {
     getMovie(id: $id) {
       id
-      name
+      title
       description
       video
       createdAt
@@ -23,7 +23,34 @@ export const listMovies = /* GraphQL */ `
     listMovies(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
+        title
+        description
+        video
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const moviesByTitle = /* GraphQL */ `
+  query MoviesByTitle(
+    $title: String!
+    $sortDirection: ModelSortDirection
+    $filter: ModelMovieFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    moviesByTitle(
+      title: $title
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
         description
         video
         createdAt

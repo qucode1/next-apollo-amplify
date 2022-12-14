@@ -9,7 +9,7 @@ export const createMovie = /* GraphQL */ `
   ) {
     createMovie(input: $input, condition: $condition) {
       id
-      name
+      title
       description
       video
       createdAt
@@ -24,7 +24,7 @@ export const updateMovie = /* GraphQL */ `
   ) {
     updateMovie(input: $input, condition: $condition) {
       id
-      name
+      title
       description
       video
       createdAt
@@ -39,7 +39,7 @@ export const deleteMovie = /* GraphQL */ `
   ) {
     deleteMovie(input: $input, condition: $condition) {
       id
-      name
+      title
       description
       video
       createdAt
