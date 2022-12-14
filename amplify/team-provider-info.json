@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-nextapollo-dev-210411-authRole",
+      "UnauthRoleArn": "arn:aws:iam::980808682115:role/amplify-nextapollo-dev-210411-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::980808682115:role/amplify-nextapollo-dev-210411-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-nextapollo-dev-210411-deployment",
+      "UnauthRoleName": "amplify-nextapollo-dev-210411-unauthRole",
+      "StackName": "amplify-nextapollo-dev-210411",
+      "StackId": "arn:aws:cloudformation:eu-central-1:980808682115:stack/amplify-nextapollo-dev-210411/7c7ddb20-7bea-11ed-90a2-06db897b7666",
+      "AmplifyAppId": "dv318jh679zki"
+    }
+  }
+}

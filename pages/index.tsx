@@ -1,8 +1,39 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { useQuery, gql } from '@apollo/client';
 import styles from '../styles/Home.module.css'
 
+import { client, countriesClient } from './_app';
+
+const GET_LOCATIONS = gql`
+  query GetLocations {
+    locations {
+      id
+      name
+      description
+      photo
+    }
+  }
+`;
+
+const GET_COUNTRY = gql`
+  query Query {
+    country(code: "BR") {
+      code
+      name
+    }
+  }
+`
+
 export default function Home() {
+  const { loading, error, data } = useQuery(GET_LOCATIONS, {
+    client
+  });
+
+  const { loading: countryLoading, error: countryError, data: countryData } = useQuery(GET_COUNTRY, {
+    client: countriesClient
+  });
+
   return (
     <div className={styles.container}>
       <Head>
@@ -16,42 +47,25 @@ export default function Home() {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
+        <h2>Apollo Docs Api</h2>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          {loading && <h2>Loading...</h2>}
+          {error && <p>Error: {error.message}</p>}
+          {data?.locations?.map(({ code: id, name }: { code: string, name: string }) => (
+            <div key={id} className={styles.card}>
+              <h4>{name}</h4>
+            </div>
+          ))}
         </div>
+
+        <h2>Countries Api</h2>
+
+        {countryLoading && <h2>Countries loading...</h2>}
+        {countryError && <p>Countries error: {countryError.message}</p>}
+        {countryData?.country && <div key={countryData?.country.code} className={styles.card}>
+          <h4>{countryData?.country?.name}</h4>
+        </div>}
       </main>
 
       <footer className={styles.footer}>
